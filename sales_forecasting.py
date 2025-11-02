@@ -2,6 +2,8 @@ from upgini import FeaturesEnricher , SearchKey
 from upgini.metadata import CVType
 from os.path import exists
 import pandas as pd
+from catboost import CatBoostRegressor
+from catboost.utils import eval_metric
 
 df_path = "train.csv.zip" if exists("train.csv.zip") else "https://github.com/upgini/upgini/raw/main/notebooks/train.csv.zip"
 df = pd.read_csv(df_path)
@@ -35,3 +37,11 @@ enricher = FeaturesEnricher(
 enricher.fit(train_features, train_target  , eval_set=[(test_features, test_target)])
 
 
+
+model = CatBoostRegressor(verbose=False, allow_writing_files=False , random_state=0)
+
+enricher.calculate_metrics(train_features , train_target ,
+                           eval_set=[(test_features, test_target)],
+                           estimator=model,
+                           scoring="mean_absolute_percentage_error"
+                           )
