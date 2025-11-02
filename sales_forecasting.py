@@ -19,10 +19,11 @@ train = df[df["date"] < "2017-01-01"]
 test = df[df["date"] >= "2017-01-01"]
 
 train_features = train.drop(columns="sales")
-train_target = train[["sales"]]
+train_target = train["sales"]
 
 test_features = test.drop(columns="sales")
-test_target = test[["sales"]]
+test_target = test["sales"]
+
 
 enricher = FeaturesEnricher(
     search_keys={
@@ -31,6 +32,6 @@ enricher = FeaturesEnricher(
     cv = CVType.time_series
 )
 
-enricher.fit(train_target , train_features , eval_set=[(test_target , test_features)])
+enricher.fit(train_features, train_target  , eval_set=[(test_features, test_target)])
 
 
